@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Uni Tracker — Pakistan</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   THEME VARIABLES
+═══════════════════════════════════════════════════ */
+:root {
+  --bg:#080c12; --sidebar:#060a0f; --panel:rgba(8,12,20,0.98);
+  --glass:rgba(255,255,255,0.03); --glass-bdr:rgba(255,255,255,0.07);
+  --card:rgba(255,255,255,0.025); --card-bdr:rgba(255,255,255,0.07);
+  --input:#0d1520; --input-bdr:#1e2d42;
+  --divider:rgba(255,255,255,0.06);
+  --t1:#e8edf5; --t2:#8899b0; --t3:#4a5a6e; --t4:#2a3a4e; --t5:#1a2535;
+  --red:#ef4444; --rdim:rgba(239,68,68,0.09); --rbdr:rgba(239,68,68,0.22);
+  --blue:#3b82f6; --bdim:rgba(59,130,246,0.09); --bbdr:rgba(59,130,246,0.22);
+  --green:#22c55e; --gdim:rgba(34,197,94,0.09); --gbdr:rgba(34,197,94,0.22);
+  --amber:#f59e0b; --adim:rgba(245,158,11,0.09); --abdr:rgba(245,158,11,0.22);
+  --purple:#a855f7; --pdim:rgba(168,85,247,0.09); --pbdr:rgba(168,85,247,0.22);
+  --sw:240px;
+  --shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+[data-theme="light"] {
+  --bg:#f0f4fa; --sidebar:#e4eaf5; --panel:rgba(240,244,250,0.98);
+  --glass:rgba(255,255,255,0.7); --glass-bdr:rgba(0,0,0,0.08);
+  --card:rgba(255,255,255,0.85); --card-bdr:rgba(0,0,0,0.08);
+  --input:#ffffff; --input-bdr:#c8d5e8;
+  --divider:rgba(0,0,0,0.07);
+  --t1:#0f1a2e; --t2:#3d5070; --t3:#6e839a; --t4:#a0b4c8; --t5:#d0dce8;
+  --rdim:rgba(239,68,68,0.07); --rbdr:rgba(239,68,68,0.2);
+  --bdim:rgba(59,130,246,0.07); --bbdr:rgba(59,130,246,0.2);
+  --gdim:rgba(34,197,94,0.07); --gbdr:rgba(34,197,94,0.2);
+  --adim:rgba(245,158,11,0.07); --abdr:rgba(245,158,11,0.2);
+  --pdim:rgba(168,85,247,0.07); --pbdr:rgba(168,85,247,0.2);
+  --shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* ═══════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);transition:background .3s,color .3s}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:var(--t4);border-radius:10px}
+::-webkit-scrollbar-track{background:transparent}
+input,textarea,select{font-family:'DM Sans',sans-serif;background:var(--input);color:var(--t1);border:1px solid var(--input-bdr);transition:border .2s,background .3s,color .3s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:rgba(239,68,68,.45)}
+input::placeholder,textarea::placeholder{color:var(--t3)}
+
+/* ═══════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes marquee{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.fade-up{animation:fadeUp .25s ease forwards}
+
+/* ═══════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════ */
+#app{display:flex;height:100vh;overflow:hidden}
+#mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:89;backdrop-filter:blur(4px)}
+
+/* ═══════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════ */
+#sidebar{
+  width:var(--sw);flex-shrink:0;
+  background:var(--sidebar);border-right:1px solid var(--divider);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),background .3s;
+  z-index:90;
+}
+/* Brand */
+.sb-brand{padding:14px;border-bottom:1px solid var(--divider);flex-shrink:0}
+.sb-brand-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sb-logo{width:34px;height:34px;background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 4px 12px rgba(239,68,68,.3)}
+.sb-title{font-size:14px;font-weight:800;color:var(--t1);letter-spacing:-.02em}
+.sb-sub{font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.14em;margin-top:1px}
+
+/* PKT Clock */
+.sb-clock{
+  background:var(--card);border:1px solid var(--card-bdr);border-radius:12px;
+  padding:10px 12px;display:flex;align-items:center;justify-content:space-between;
+}
+.clock-left{}
+.clock-time{font-size:18px;font-weight:800;font-family:'DM Mono',monospace;color:var(--t1);letter-spacing:-.01em;line-height:1}
+.clock-date{font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+.clock-tz{font-size:7px;font-weight:800;color:var(--t4);text-transform:uppercase;letter-spacing:.15em;margin-top:1px}
+.clock-icon{font-size:22px;line-height:1;animation:pulse 4s ease-in-out infinite}
+
+/* Nav Tabs */
+.sb-nav{display:flex;gap:3px;margin-top:10px}
+.sn-btn{flex:1;padding:7px 2px;border-radius:8px;border:1px solid transparent;background:none;color:var(--t3);font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s}
+.sn-btn .ico{font-size:14px;line-height:1}
+.sn-btn.act{background:var(--rdim);border-color:var(--rbdr);color:#f87171}
+.sn-btn:hover:not(.act){background:var(--glass);color:var(--t2)}
+
+/* Sidebar scroll body */
+.sb-body{flex:1;overflow-y:auto;padding:6px 8px 8px}
+
+/* Section headers */
+.sb-sec{display:flex;align-items:center;justify-content:space-between;padding:10px 4px 5px;font-size:8px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.15em}
+
+/* Week group */
+.week-group{margin-bottom:6px}
+.week-hdr{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:9px;cursor:pointer;border:1px solid transparent;transition:all .15s;user-select:none}
+.week-hdr:hover{background:var(--glass);border-color:var(--glass-bdr)}
+.week-hdr.current-wk{background:rgba(59,130,246,.06);border-color:rgba(59,130,246,.15)}
+.wk-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.wk-label{font-size:10px;font-weight:800;color:var(--t2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.week-hdr.current-wk .wk-label{color:#60a5fa}
+.wk-count{font-size:8px;color:var(--t3);font-weight:700;flex-shrink:0}
+.wk-arrow{font-size:10px;color:var(--t4);transition:transform .2s;flex-shrink:0}
+.week-group.open .wk-arrow{transform:rotate(90deg)}
+.week-days{display:none;padding-left:10px;margin-top:2px}
+.week-group.open .week-days{display:block}
+.wk-badge{font-size:7px;font-weight:800;padding:1px 5px;border-radius:4px;background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3);flex-shrink:0}
+.wk-done-badge{background:rgba(34,197,94,.12);color:#4ade80;border-color:rgba(34,197,94,.25)}
+
+/* Day items */
+.day-item{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:9px;cursor:pointer;margin-bottom:2px;border:1px solid transparent;transition:all .15s}
+.day-item:hover{background:var(--glass);border-color:var(--glass-bdr)}
+.day-item.act{background:var(--rdim);border-color:var(--rbdr)}
+.day-item.act .di-label{color:var(--t1)}
+.day-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.di-wrap{flex:1;min-width:0}
+.di-meta{font-size:8px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;line-height:1;margin-bottom:2px}
+.di-label{font-size:11px;font-weight:700;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.di-del{display:none;padding:2px;cursor:pointer;color:var(--t3);border:none;background:none;border-radius:4px;font-size:12px;line-height:1;flex-shrink:0}
+.day-item:hover .di-del{display:flex}
+.di-del:hover{color:var(--red)}
+
+/* Subject items */
+.subj-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:9px;cursor:pointer;margin-bottom:2px;border:1px solid transparent;transition:all .15s}
+.subj-item:hover{background:var(--glass);border-color:var(--glass-bdr)}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sname{font-size:12px;font-weight:600;color:var(--t2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-del{display:none;padding:2px;cursor:pointer;color:var(--t3);border:none;background:none;border-radius:4px;font-size:12px;line-height:1}
+.subj-item:hover .s-del{display:flex}
+.s-del:hover{color:var(--red)}
+
+.add-btn{width:100%;padding:7px 0;background:var(--card);border:1px dashed var(--card-bdr);border-radius:9px;color:var(--t3);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s;margin-top:4px}
+.add-btn:hover{background:var(--glass);border-color:var(--glass-bdr);color:var(--t2)}
+
+/* Sidebar bottom */
+.sb-bottom{border-top:1px solid var(--divider);flex-shrink:0}
+.sb-stats{padding:8px;display:flex;gap:5px}
+.sp{flex:1;padding:7px 0;text-align:center;background:var(--card);border:1px solid var(--card-bdr);border-radius:9px;transition:background .3s}
+.sp-v{font-size:15px;font-weight:900;color:var(--t1);line-height:1}
+.sp-l{font-size:7px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+/* JSON section */
+.json-sec{padding:8px;display:flex;flex-direction:column;gap:5px}
+.json-status{display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:9px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;transition:all .3s}
+.js-ok{background:var(--gdim);border:1px solid var(--gbdr);color:#4ade80}
+.js-warn{background:var(--adim);border:1px solid var(--abdr);color:#fbbf24}
+.js-err{background:var(--rdim);border:1px solid var(--rbdr);color:#f87171}
+.jdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.js-ok .jdot{background:#4ade80}
+.js-warn .jdot{background:#fbbf24;animation:blink 1.2s infinite}
+.js-err .jdot{background:#f87171;animation:blink .8s infinite}
+.json-btns{display:flex;gap:5px}
+.jbtn{flex:1;padding:7px 4px;border-radius:9px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .15s}
+.jbtn-s{background:var(--bdim);color:#60a5fa;border:1px solid var(--bbdr)}
+.jbtn-s:hover{background:rgba(59,130,246,.16)}
+.jbtn-l{background:var(--gdim);color:#4ade80;border:1px solid var(--gbdr)}
+.jbtn-l:hover{background:rgba(34,197,94,.16)}
+
+/* ═══════════════════════════════════════════════════
+   MAIN AREA
+═══════════════════════════════════════════════════ */
+#main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;transition:background .3s}
+
+/* Deadline Banner */
+#dl-banner{display:none;flex-shrink:0;overflow:hidden}
+.dl-inner{background:linear-gradient(90deg,rgba(239,68,68,.13),rgba(245,158,11,.09),rgba(239,68,68,.13));border-bottom:1px solid rgba(239,68,68,.25);padding:8px 14px;display:flex;align-items:center;gap:10px}
+.dl-icon{font-size:15px;flex-shrink:0;animation:blink 1s infinite}
+.dl-track{flex:1;overflow:hidden;position:relative;height:18px}
+.dl-ticker{position:absolute;white-space:nowrap;font-size:11px;font-weight:700;color:#fca5a5;animation:marquee 22s linear infinite;top:0;display:flex;align-items:center;gap:20px}
+.dl-chip{font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em}
+.dlc-today{background:rgba(239,68,68,.3);border:1px solid rgba(239,68,68,.55);color:#fff}
+.dlc-tom{background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.45);color:#fde68a}
+.dlc-soon{background:rgba(168,85,247,.18);border:1px solid rgba(168,85,247,.4);color:#d8b4fe}
+
+/* Header */
+#hdr{height:56px;border-bottom:1px solid var(--divider);display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--panel);flex-shrink:0;transition:background .3s}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hbtn{padding:7px;background:var(--glass);border:1px solid var(--glass-bdr);border-radius:9px;cursor:pointer;font-size:15px;line-height:1;color:var(--t2);transition:all .15s;display:flex;align-items:center;justify-content:center}
+.hbtn:hover{background:var(--card);color:var(--t1)}
+.hdr-title{font-size:15px;font-weight:800;letter-spacing:-.02em;color:var(--t1)}
+.hdr-sub{font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.hstat{text-align:right}
+.hstat-v{font-size:16px;font-weight:900;line-height:1}
+.hstat-l{font-size:7px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+/* Theme toggle */
+.theme-toggle{width:48px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0;padding:0}
+[data-theme="dark"] .theme-toggle{background:linear-gradient(135deg,#1e2d42,#2a3a50)}
+[data-theme="light"] .theme-toggle{background:linear-gradient(135deg,#fbbf24,#f59e0b)}
+.toggle-thumb{position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .25s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+[data-theme="dark"] .toggle-thumb{left:3px}
+[data-theme="light"] .toggle-thumb{left:25px}
+.hamburger{display:none}
+
+/* Content */
+#content{flex:1;overflow-y:auto;padding:18px;transition:background .3s}
+
+/* Empty */
+.empty-st{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:300px;gap:10px;text-align:center;color:var(--t3)}
+.e-icon{font-size:46px;margin-bottom:4px}
+.e-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--t4)}
+.e-sub{font-size:12px;color:var(--t3);max-width:280px;line-height:1.75}
+
+/* Day view header */
+.dv-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:10px;flex-wrap:wrap}
+.dv-title{font-size:20px;font-weight:900;letter-spacing:-.03em;color:var(--t1)}
+.dv-meta{font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+.dv-add-btn{padding:9px 14px;background:var(--rdim);color:#f87171;border:1px solid var(--rbdr);border-radius:11px;font-size:10px;font-weight:800;cursor:pointer;font-family:inherit;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.dv-add-btn:hover{background:rgba(239,68,68,.16)}
+
+/* Cards grid */
+.c-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:13px}
+
+/* Subject card */
+.s-card{background:var(--glass);border:1px solid var(--glass-bdr);border-top:2px solid;border-radius:18px;padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.s-card:hover{background:rgba(255,255,255,.05);transform:translateY(-2px);box-shadow:var(--shadow)}
+[data-theme="light"] .s-card:hover{background:rgba(255,255,255,.9)}
+.c-top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.c-sname{font-size:14px;font-weight:800;letter-spacing:-.01em;flex:1}
+.c-badge{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;padding:3px 6px;border-radius:6px;flex-shrink:0}
+.c-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
+.cst{padding:8px 5px;border-radius:11px;text-align:center;background:var(--card);border:1px solid var(--card-bdr);transition:background .3s}
+.cst-n{font-size:17px;font-weight:900;line-height:1}
+.cst-l{font-size:7px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-top:2px}
+.c-foot{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.c-prog{flex:1;margin-right:8px}
+.prog-lbl{font-size:7px;color:var(--t3);font-weight:700;margin-bottom:3px}
+.prog-bar{height:3px;background:var(--t5);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;transition:width .4s}
+.c-open{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--t3)}
+.c-rm{position:absolute;top:10px;right:10px;padding:3px;background:var(--card);border:1px solid var(--card-bdr);border-radius:7px;cursor:pointer;color:var(--t3);font-size:11px;display:none;line-height:1;transition:all .15s}
+.s-card:hover .c-rm{display:flex}
+.c-rm:hover{background:var(--rdim);color:var(--red);border-color:var(--rbdr)}
+/* Deadline chip on card */
+.dl-chip-card{font-size:8px;font-weight:800;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:.06em;display:inline-flex;align-items:center;gap:3px;margin-bottom:5px}
+.dcc-today{background:rgba(239,68,68,.18);border:1px solid rgba(239,68,68,.4);color:#fca5a5}
+.dcc-tom{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.35);color:#fde68a}
+.dcc-soon{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.3);color:#d8b4fe}
+
+/* ═══════════════════════════════════════════════════
+   EXAM REVIEW
+═══════════════════════════════════════════════════ */
+.er-hdr{margin-bottom:18px}
+.er-title{font-size:20px;font-weight:900;letter-spacing:-.02em;color:var(--t1)}
+.er-sub{font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-top:3px}
+.esb{margin-bottom:10px;border-radius:14px;overflow:hidden;border:1px solid var(--card-bdr)}
+.esb-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:var(--card);transition:all .15s;user-select:none}
+.esb-hdr:hover{background:var(--glass)}
+.esb-name{font-size:13px;font-weight:800;flex:1}
+.esb-cnt{font-size:10px;font-weight:700;color:var(--t3);flex-shrink:0}
+.esb-arr{font-size:11px;color:var(--t3);transition:transform .2s;flex-shrink:0}
+.esb.open .esb-arr{transform:rotate(90deg)}
+.esb-pts{display:none;padding:8px 12px 12px;flex-direction:column;gap:5px;background:var(--glass)}
+.esb.open .esb-pts{display:flex;animation:fadeUp .2s ease}
+.ep-row{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;background:var(--pdim);border:1px solid var(--pbdr);border-radius:10px}
+.ep-dot{width:5px;height:5px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:7px}
+.ep-txt{flex:1;font-size:12px;color:var(--t1);line-height:1.55}
+.ep-src{font-size:8px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;flex-shrink:0;min-width:55px;text-align:right;margin-top:2px}
+.er-empty{text-align:center;padding:50px 20px;color:var(--t3);font-size:12px;line-height:1.8}
+
+/* ═══════════════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════════════ */
+#modal-ov{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:10px;background:rgba(4,8,16,.92);backdrop-filter:blur(20px)}
+#modal-ov.open{display:flex}
+#modal{width:100%;max-width:800px;max-height:93vh;background:var(--panel);border:1px solid var(--divider);border-radius:24px;display:flex;flex-direction:column;overflow:hidden;animation:fadeUp .25s ease;box-shadow:var(--shadow);transition:background .3s}
+.m-hdr{padding:16px 20px;border-bottom:1px solid var(--divider);display:flex;align-items:center;gap:12px;flex-shrink:0}
+.m-dot{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;flex-shrink:0}
+.m-title{font-size:16px;font-weight:900;letter-spacing:-.02em;flex:1;min-width:0;color:var(--t1)}
+.m-sub{font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.15em;margin-top:2px}
+.m-close{padding:7px;background:var(--glass);border:1px solid var(--glass-bdr);border-radius:10px;cursor:pointer;color:var(--t3);font-size:17px;display:flex;line-height:1;transition:all .15s;flex-shrink:0}
+.m-close:hover{color:var(--t1)}
+.m-tabs{display:flex;border-bottom:1px solid var(--divider);flex-shrink:0;padding:0 20px;overflow-x:auto}
+.m-tab{padding:11px 13px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;cursor:pointer;color:var(--t3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.m-tab.act{color:var(--t1);border-bottom-color:var(--red)}
+.m-tab:hover:not(.act){color:var(--t2)}
+.tc{background:var(--card);border:1px solid var(--card-bdr);border-radius:5px;padding:1px 5px;font-size:7px;transition:all .15s}
+.m-tab.act .tc{background:var(--rdim);border-color:var(--rbdr);color:#f87171}
+.m-body{flex:1;overflow-y:auto;padding:18px 20px}
+.tab-p{display:none}.tab-p.act{display:block;animation:fadeUp .2s ease}
+/* Input rows */
+.inp-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.inp-main{flex:1;min-width:140px;padding:10px 13px;border-radius:11px;font-size:13px}
+.inp-due{width:140px;padding:10px 13px;border-radius:11px;font-size:12px}
+.abtn{padding:10px 14px;background:var(--red);color:#fff;border:none;border-radius:11px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .15s;letter-spacing:.05em}
+.abtn:hover{opacity:.85}
+.abtn-p{background:var(--purple)}
+/* Assignment items */
+.a-list{display:flex;flex-direction:column;gap:6px}
+.a-item{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;background:var(--card);border:1px solid var(--card-bdr);border-radius:12px;transition:all .15s}
+.a-item.done{opacity:.35}
+.a-item.done .a-txt{text-decoration:line-through;color:var(--t3)}
+.a-chk{width:19px;height:19px;border-radius:6px;border:1px solid var(--card-bdr);background:var(--card);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;margin-top:1px}
+.a-item.done .a-chk{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:#4ade80}
+.a-body{flex:1;min-width:0}
+.a-txt{font-size:13px;color:var(--t1);line-height:1.4}
+.due-badge{font-size:8px;font-weight:800;padding:2px 7px;border-radius:5px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;display:inline-block;margin-top:4px}
+.db-n{background:var(--input);border:1px solid var(--input-bdr);color:var(--t3)}
+.db-s{background:var(--pdim);border:1px solid var(--pbdr);color:#d8b4fe}
+.db-t{background:var(--adim);border:1px solid var(--abdr);color:#fde68a}
+.db-td{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.35);color:#fca5a5;animation:blink 1.5s infinite}
+.db-ov{background:rgba(239,68,68,.22);border:1px solid rgba(239,68,68,.45);color:#fca5a5}
+.i-del{padding:4px;background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;border-radius:5px;display:flex;line-height:1;transition:all .15s;flex-shrink:0}
+.i-del:hover{color:var(--red);background:var(--rdim)}
+.i-del.p:hover{color:var(--purple);background:var(--pdim)}
+.l-empty{text-align:center;padding:32px 0;color:var(--t3);font-size:11px}
+/* Notes */
+.notes-ta{width:100%;min-height:240px;padding:14px;border-radius:13px;font-size:12px;line-height:1.85;font-family:'DM Mono',monospace;resize:vertical}
+.notes-ft{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
+.notes-ch{font-size:8px;color:var(--t3);font-weight:700}
+.notes-sv{font-size:9px;color:#4ade80;font-weight:700;opacity:0;transition:opacity .3s}
+.notes-sv.show{opacity:1}
+/* Exam items */
+.ex-list{display:flex;flex-direction:column;gap:6px}
+.ex-item{display:flex;align-items:flex-start;gap:8px;padding:11px 13px;background:var(--pdim);border:1px solid var(--pbdr);border-radius:12px}
+.ex-dot{width:5px;height:5px;border-radius:50%;background:var(--purple);flex-shrink:0;margin-top:7px}
+.ex-txt{flex:1;font-size:13px;color:var(--t1);line-height:1.5}
+
+/* ═══════════════════════════════════════════════════
+   MINI MODAL
+═══════════════════════════════════════════════════ */
+#mini-ov{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;background:rgba(4,8,16,.88);backdrop-filter:blur(12px)}
+#mini-ov.open{display:flex}
+.mini{background:var(--panel);border:1px solid var(--divider);border-radius:22px;padding:24px;width:375px;max-width:96vw;animation:fadeUp .2s ease;box-shadow:var(--shadow);transition:background .3s}
+.mini-ttl{font-size:14px;font-weight:900;letter-spacing:-.01em;margin-bottom:16px;color:var(--t1)}
+.mlbl{font-size:8px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.12em;display:block;margin-bottom:5px}
+.minp{width:100%;padding:10px 13px;border-radius:11px;font-size:13px;margin-bottom:12px}
+.c-row{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.c-opt{width:26px;height:26px;border-radius:7px;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.c-opt.sel{border-color:var(--t1);transform:scale(1.18)}
+.m-acts{display:flex;gap:7px;margin-top:2px}
+.m-cancel{flex:1;padding:10px;background:var(--glass);border:1px solid var(--glass-bdr);border-radius:11px;color:var(--t2);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s}
+.m-cancel:hover{background:var(--card)}
+.m-ok{flex:2;padding:10px;background:var(--red);border:none;border-radius:11px;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;text-transform:uppercase;letter-spacing:.08em;transition:opacity .15s}
+.m-ok:hover{opacity:.85}
+/* Subject selector list */
+.ssl{display:flex;flex-direction:column;gap:5px;max-height:215px;overflow-y:auto;margin-bottom:12px}
+.ssl-i{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:11px;cursor:pointer;border:1px solid var(--card-bdr);background:var(--card);transition:all .15s}
+.ssl-i:hover{background:var(--glass);border-color:var(--glass-bdr)}
+.ssl-i.sel{background:var(--rdim);border-color:var(--rbdr)}
+.ssl-chk{width:17px;height:17px;border-radius:5px;border:1px solid var(--card-bdr);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.ssl-i.sel .ssl-chk{background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.4)}
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media(max-width:900px){
+  :root{--sw:255px}
+  #sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);box-shadow:6px 0 32px rgba(0,0,0,.6);z-index:90}
+  #sidebar.open{transform:translateX(0)}
+  #mob-overlay.show{display:block}
+  .hamburger{display:flex !important}
+  .hstat{display:none}
+  .c-grid{grid-template-columns:1fr 1fr}
+  #content{padding:13px}
+}
+@media(max-width:600px){
+  .c-grid{grid-template-columns:1fr}
+  .inp-row .inp-due{width:100%}
+  .m-hdr{padding:13px 15px}
+  .m-body{padding:13px 15px}
+  .m-tabs{padding:0 13px}
+  .dv-title{font-size:17px}
+}
+@media(max-width:400px){
+  .inp-row{flex-direction:column}
+  .inp-row .inp-main,.inp-row .inp-due{width:100%}
+  .c-stats{grid-template-columns:1fr 1fr}
+}
+
+/* Laptop enhancement */
+@media(min-width:1200px){
+  :root{--sw:260px}
+  .c-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+}
+</style>
+</head>
+<body>
+
+<div id="mob-overlay" onclick="closeSidebar()"></div>
+
+<div id="app">
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<aside id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-brand-row">
+      <div class="sb-logo">📚</div>
+      <div>
+        <div class="sb-title">Uni Tracker</div>
+        <div class="sb-sub">Pakistan Edition</div>
+      </div>
+    </div>
+    <!-- PKT Clock -->
+    <div class="sb-clock">
+      <div class="clock-left">
+        <div class="clock-time" id="clk-time">00:00:00</div>
+        <div class="clock-date" id="clk-date">Loading...</div>
+        <div class="clock-tz">PKT — UTC+5</div>
+      </div>
+      <div class="clock-icon" id="clk-icon">🌙</div>
+    </div>
+    <!-- Nav -->
+    <div class="sb-nav" style="margin-top:10px">
+      <button class="sn-btn act" id="sn-days" onclick="setSV('days')"><span class="ico">📅</span>Days</button>
+      <button class="sn-btn" id="sn-subjects" onclick="setSV('subjects')"><span class="ico">📖</span>Subjects</button>
+      <button class="sn-btn" id="sn-exam" onclick="setSV('exam')"><span class="ico">🎯</span>Exam</button>
+    </div>
+  </div>
+
+  <div class="sb-body" id="sb-body"></div>
+
+  <div class="sb-bottom">
+    <div class="sb-stats">
+      <div class="sp"><div class="sp-v" id="st-t">0</div><div class="sp-l">Tasks</div></div>
+      <div class="sp"><div class="sp-v" id="st-d">0</div><div class="sp-l">Done</div></div>
+      <div class="sp"><div class="sp-v" id="st-e">0</div><div class="sp-l">Exam</div></div>
+    </div>
+    <div class="json-sec">
+      <div class="json-status js-ok" id="jstatus">
+        <div class="jdot"></div>
+        <span id="jstatus-txt">Auto-save (Browser)</span>
+      </div>
+      <div class="json-btns">
+        <button class="jbtn jbtn-s" onclick="saveJSON()">💾 Save JSON</button>
+        <button class="jbtn jbtn-l" onclick="loadJSONTrigger()">📂 Load JSON</button>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<main id="main">
+  <!-- Deadline Banner -->
+  <div id="dl-banner">
+    <div class="dl-inner">
+      <span class="dl-icon">⚠️</span>
+      <div class="dl-track"><div class="dl-ticker" id="dl-ticker"></div></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header id="hdr">
+    <div class="hdr-left">
+      <button class="hbtn hamburger" style="display:none" onclick="toggleSidebar()">☰</button>
+      <div>
+        <div class="hdr-title" id="hdr-title">Select a Day</div>
+        <div class="hdr-sub" id="hdr-sub">Pick a day from the sidebar</div>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="hstat"><div class="hstat-v" style="color:#f59e0b" id="h-p">0</div><div class="hstat-l">Pending</div></div>
+      <div class="hstat"><div class="hstat-v" style="color:#22c55e" id="h-d">0</div><div class="hstat-l">Done</div></div>
+      <div class="hstat"><div class="hstat-v" style="color:#a855f7" id="h-e">0</div><div class="hstat-l">Exam</div></div>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Day/Night">
+        <div class="toggle-thumb" id="tt">☀️</div>
+      </button>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div id="content">
+    <div class="empty-st" id="empty-el">
+      <div class="e-icon">🗓️</div>
+      <div class="e-title">No Day Selected</div>
+      <div class="e-sub">Add a day from the sidebar. Days are grouped by week automatically!</div>
+    </div>
+    <div id="day-view" style="display:none"></div>
+    <div id="exam-view" style="display:none"></div>
+  </div>
+</main>
+</div>
+
+<!-- ══════════════ SUBJECT MODAL ══════════════ -->
+<div id="modal-ov" onclick="onMOvClick(event)">
+  <div id="modal">
+    <div class="m-hdr">
+      <div class="m-dot" id="m-dot"></div>
+      <div style="flex:1;min-width:0">
+        <div class="m-title" id="m-title"></div>
+        <div class="m-sub" id="m-sub"></div>
+      </div>
+      <button class="m-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-tabs">
+      <div class="m-tab act" data-t="asgn" onclick="switchTab('asgn')">📝 Assignments <span class="tc" id="tc-a">0</span></div>
+      <div class="m-tab" data-t="notes" onclick="switchTab('notes')">🗒️ Notes</div>
+      <div class="m-tab" data-t="exam" onclick="switchTab('exam')">🎯 Exam Points <span class="tc" id="tc-e">0</span></div>
+    </div>
+    <div class="m-body">
+      <!-- Assignments -->
+      <div class="tab-p act" id="p-asgn">
+        <div class="inp-row">
+          <input type="text" class="inp-main" id="a-txt" placeholder="Assignment / task..." onkeydown="if(event.key==='Enter')addAsgn()">
+          <input type="date" class="inp-due" id="a-due" title="Deadline">
+          <button class="abtn" onclick="addAsgn()">+ Add</button>
+        </div>
+        <div class="a-list" id="a-list"></div>
+        <div class="l-empty" id="a-empty" style="display:none">No assignments yet. Add one above! ✏️</div>
+      </div>
+      <!-- Notes -->
+      <div class="tab-p" id="p-notes">
+        <textarea class="notes-ta" id="notes-ta" placeholder="Lecture notes, important points, summaries..." oninput="onNotes()"></textarea>
+        <div class="notes-ft">
+          <span class="notes-ch" id="notes-ch">0 characters</span>
+          <span class="notes-sv" id="notes-sv">✓ Saved</span>
+        </div>
+      </div>
+      <!-- Exam Points -->
+      <div class="tab-p" id="p-exam">
+        <div class="inp-row">
+          <input type="text" class="inp-main" id="e-txt" placeholder="Key point to remember for exam..." onkeydown="if(event.key==='Enter')addExam()">
+          <button class="abtn abtn-p" onclick="addExam()">+ Add</button>
+        </div>
+        <div class="ex-list" id="e-list"></div>
+        <div class="l-empty" id="e-empty" style="display:none">No exam points yet! 🎯</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MINI MODAL ══════════════ -->
+<div id="mini-ov" onclick="onMiniOvClick(event)">
+  <div class="mini" id="mini-c"></div>
+</div>
+
+<input type="file" id="json-inp" accept=".json" style="display:none" onchange="onJSONFile(event)">
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+var COLORS = ['#ef4444','#3b82f6','#22c55e','#f59e0b','#a855f7','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16'];
+var LS = 'uni_tracker_v3';
+
+var S = {subjects:[],days:[],records:{},activeDay:null};
+try{ var _s=localStorage.getItem(LS); if(_s){var _p=JSON.parse(_s); if(_p)Object.assign(S,_p);} }catch(e){}
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).substr(2,5); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function rec(dId,sId){ var k=dId+'__'+sId; if(!S.records[k])S.records[k]={assignments:[],notes:'',examPoints:[]}; return S.records[k]; }
+
+// ═══════════════════════════════════════════════════════════
+// PKT CLOCK  (UTC+5, no DST)
+// ═══════════════════════════════════════════════════════════
+function getPKT(){
+  var now = new Date();
+  var utcMs = now.getTime() + now.getTimezoneOffset()*60000;
+  return new Date(utcMs + 5*3600000);
+}
+
+function updateClock(){
+  var t  = getPKT();
+  var h  = t.getHours(), m = t.getMinutes(), s = t.getSeconds();
+  var ampm = h>=12?'PM':'AM';
+  var h12  = h%12||12;
+  var tStr = pad2(h12)+':'+pad2(m)+':'+pad2(s)+' '+ampm;
+  var days  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months= ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dStr  = days[t.getDay()]+', '+t.getDate()+' '+months[t.getMonth()]+' '+t.getFullYear();
+
+  // Day/Night icon
+  var isNight = h<6 || h>=20;
+  var isMorning = h>=6 && h<12;
+  var icon = isNight ? '🌙' : isMorning ? '🌅' : h>=12&&h<17 ? '☀️' : '🌆';
+
+  var ce = document.getElementById('clk-time');
+  var de = document.getElementById('clk-date');
+  var ie = document.getElementById('clk-icon');
+  if(ce) ce.textContent = tStr;
+  if(de) de.textContent = dStr;
+  if(ie) ie.textContent = icon;
+}
+function pad2(n){ return String(n).padStart(2,'0'); }
+setInterval(updateClock,1000);
+updateClock();
+
+// ═══════════════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════════════
+var theme = localStorage.getItem('ut_theme')||'dark';
+document.documentElement.setAttribute('data-theme',theme);
+updateThumbIcon();
+
+function toggleTheme(){
+  theme = theme==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',theme);
+  localStorage.setItem('ut_theme',theme);
+  updateThumbIcon();
+}
+function updateThumbIcon(){
+  var el = document.getElementById('tt');
+  if(el) el.textContent = theme==='dark'?'☀️':'🌙';
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTO-SAVE + JSON
+// ═══════════════════════════════════════════════════════════
+var saveTimer=null;
+function autoSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(function(){
+    try{ localStorage.setItem(LS,JSON.stringify(S)); setSt('ok','✓ Auto-saved'); setTimeout(function(){setSt('ok','Auto-save (Browser)');},1800); }
+    catch(e){ setSt('err','✗ Storage Error!'); }
+  },350);
+}
+function setSt(type,msg){
+  var el=document.getElementById('jstatus'), tx=document.getElementById('jstatus-txt');
+  if(!el)return;
+  el.className='json-status js-'+({ok:'ok',warn:'warn',err:'err'}[type]||'ok');
+  tx.textContent=msg;
+}
+function saveJSON(){
+  try{
+    localStorage.setItem(LS,JSON.stringify(S));
+    var b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+    var u=URL.createObjectURL(b), a=document.createElement('a');
+    a.href=u; a.download='uni_tracker_'+new Date().toISOString().split('T')[0]+'.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(u);
+    setSt('ok','✓ JSON File Saved!');
+    setTimeout(function(){setSt('ok','Auto-save (Browser)');},3500);
+  }catch(e){ setSt('err','✗ Save Failed!'); setTimeout(function(){setSt('ok','Auto-save (Browser)');},3500); }
+}
+function loadJSONTrigger(){ document.getElementById('json-inp').click(); }
+function onJSONFile(e){
+  var f=e.target.files[0]; if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    try{
+      var d=JSON.parse(ev.target.result);
+      if(!d||typeof d!=='object')throw 0;
+      Object.assign(S,d); localStorage.setItem(LS,JSON.stringify(S));
+      setSt('ok','✓ JSON Loaded!'); setTimeout(function(){setSt('ok','Auto-save (Browser)');},3000);
+      render();
+    }catch(err){ setSt('err','✗ Invalid File!'); setTimeout(function(){setSt('ok','Auto-save (Browser)');},3500); }
+  };
+  r.readAsText(f); e.target.value='';
+}
+
+// ═══════════════════════════════════════════════════════════
+// WEEK HELPERS
+// ═══════════════════════════════════════════════════════════
+function getWeekKey(dateStr){
+  // Returns "YYYY-Www" ISO week string
+  var d = new Date(dateStr+'T00:00:00');
+  var tmp = new Date(d.valueOf());
+  tmp.setDate(tmp.getDate() + 4 - (tmp.getDay()||7));
+  var yr = tmp.getFullYear();
+  var wn = Math.ceil((((tmp - new Date(yr,0,1))/86400000)+1)/7);
+  return yr+'-W'+String(wn).padStart(2,'0');
+}
+function getWeekRange(dateStr){
+  var d = new Date(dateStr+'T00:00:00');
+  var day = d.getDay()||7; // Mon=1..Sun=7
+  var mon = new Date(d); mon.setDate(d.getDate()-(day-1));
+  var sun = new Date(mon); sun.setDate(mon.getDate()+6);
+  var fmt = function(dt){ return dt.toLocaleDateString('en-PK',{month:'short',day:'numeric'}); };
+  return fmt(mon)+' – '+fmt(sun);
+}
+function getCurrentWeekKey(){
+  var now = getPKT();
+  return getWeekKey(now.toISOString().split('T')[0]);
+}
+function isPastWeek(wk){
+  return wk < getCurrentWeekKey();
+}
+
+// Group days by week
+function groupDaysByWeek(){
+  var groups = {}; // wk → {days:[], range:''}
+  S.days.forEach(function(d){
+    var wk = getWeekKey(d.date);
+    if(!groups[wk]) groups[wk]={wk:wk,days:[],range:getWeekRange(d.date)};
+    groups[wk].days.push(d);
+  });
+  // Sort weeks descending (newest first)
+  var sorted = Object.values(groups).sort(function(a,b){return b.wk.localeCompare(a.wk);});
+  // Sort days within each week descending
+  sorted.forEach(function(g){ g.days.sort(function(a,b){return b.date.localeCompare(a.date);}); });
+  return sorted;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DEADLINE HELPERS
+// ═══════════════════════════════════════════════════════════
+function todayPKT(){ var t=getPKT(); t.setHours(0,0,0,0); return t; }
+function daysUntil(str){
+  if(!str)return null;
+  var d=new Date(str+'T00:00:00'); d.setHours(0,0,0,0);
+  return Math.round((d-todayPKT())/86400000);
+}
+function getDBC(str){ var d=daysUntil(str); if(d===null)return 'db-n'; if(d<0)return 'db-ov'; if(d===0)return 'db-td'; if(d===1)return 'db-t'; if(d<=3)return 'db-s'; return 'db-n'; }
+function getDBT(str){
+  var d=daysUntil(str); if(d===null)return '';
+  var fm=new Date(str+'T00:00:00').toLocaleDateString('en-PK',{month:'short',day:'numeric'});
+  if(d<0)return '🔴 Overdue! ('+fm+')';
+  if(d===0)return '🔴 DUE TODAY!';
+  if(d===1)return '🟡 Due Tomorrow ('+fm+')';
+  if(d<=3)return '🟣 Due in '+d+' days ('+fm+')';
+  return '📅 '+fm;
+}
+function getUrgent(){
+  var out=[];
+  S.days.forEach(function(day){
+    (day.subjectIds||[]).forEach(function(sid){
+      var sub=S.subjects.find(function(s){return s.id===sid;}); if(!sub)return;
+      rec(day.id,sid).assignments.forEach(function(a){
+        if(a.done||!a.due)return;
+        var d=daysUntil(a.due);
+        if(d!==null&&d>=0&&d<=2) out.push({text:a.text,subj:sub.name,day:day.label||'Lecture',dL:d});
+      });
+    });
+  });
+  return out;
+}
+function updateBanner(){
+  var urg=getUrgent(), bn=document.getElementById('dl-banner');
+  if(!urg.length){bn.style.display='none';return;}
+  bn.style.display='block';
+  var chips=urg.map(function(u){
+    var cls=u.dL===0?'dl-chip dlc-today':u.dL===1?'dl-chip dlc-tom':'dl-chip dlc-soon';
+    var lbl=u.dL===0?'DUE TODAY':u.dL===1?'DUE TOMORROW':'2 DAYS';
+    return '<span class="'+cls+'">'+lbl+'</span> '+esc(u.text)+' — '+esc(u.subj)+' ('+esc(u.day)+')';
+  });
+  var txt=chips.join('  ·  ');
+  document.getElementById('dl-ticker').innerHTML=txt+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+txt;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIDEBAR VIEWS
+// ═══════════════════════════════════════════════════════════
+var sv='days', mv='day';
+
+function setSV(v){
+  sv=v; ['days','subjects','exam'].forEach(function(x){ document.getElementById('sn-'+x).classList.toggle('act',x===v); });
+  if(v==='exam') mv='exam'; else mv='day';
+  renderSB(); renderMain();
+}
+
+function renderSB(){
+  var el=document.getElementById('sb-body');
+  if(sv==='days') el.innerHTML=sbDaysHTML();
+  else if(sv==='subjects') el.innerHTML=sbSubjectsHTML();
+  else el.innerHTML=sbExamHTML();
+}
+
+function sbDaysHTML(){
+  var h='<div class="sb-sec">Days / Lectures</div>';
+  if(!S.days.length){
+    h+='<div style="padding:5px 4px;font-size:10px;color:var(--t3)">No days yet. Add your first day!</div>';
+  } else {
+    var groups=groupDaysByWeek();
+    var curWK=getCurrentWeekKey();
+    groups.forEach(function(g){
+      var isCur=g.wk===curWK, isPast=isPastWeek(g.wk);
+      var wNum=g.wk.split('-W')[1];
+      // Auto-open current week, auto-close past weeks
+      var isOpen=isCur||(!isPast);
+      var dotC=isCur?'#3b82f6':isPast?'#2a3a50':'#22c55e';
+      var curBadge=isCur?'<span class="wk-badge">Current</span>':'';
+      var doneBadge=isPast?'<span class="wk-badge wk-done-badge">Done ✓</span>':'';
+      h+='<div class="week-group'+(isOpen?' open':'')+'" id="wg-'+g.wk+'">';
+      h+='<div class="week-hdr'+(isCur?' current-wk':'')+'" onclick="toggleWG(\''+g.wk+'\')">';
+      h+='<div class="wk-dot" style="background:'+dotC+'"></div>';
+      h+='<div class="wk-label">Week '+wNum+' <span style="font-size:8px;color:var(--t3);font-weight:600">('+g.range+')</span></div>';
+      h+=curBadge+doneBadge;
+      h+='<span class="wk-count">'+g.days.length+'d</span>';
+      h+='<span class="wk-arrow">▶</span></div>';
+      h+='<div class="week-days">';
+      g.days.forEach(function(d){
+        var act=S.activeDay===d.id&&mv==='day';
+        var dt=new Date(d.date+'T00:00:00');
+        var dn=dt.toLocaleDateString('en-PK',{weekday:'short'});
+        var ds=dt.toLocaleDateString('en-PK',{month:'short',day:'numeric'});
+        var cnt=(d.subjectIds||[]).length;
+        // Check if this day has urgent deadlines
+        var hasUrgent=false;
+        (d.subjectIds||[]).forEach(function(sid){
+          rec(d.id,sid).assignments.forEach(function(a){
+            if(!a.done&&a.due&&daysUntil(a.due)!==null&&daysUntil(a.due)<=2&&daysUntil(a.due)>=0) hasUrgent=true;
+          });
+        });
+        h+='<div class="day-item'+(act?' act':'')+'" onclick="selDay(\''+d.id+'\')">';
+        h+='<div class="day-dot" style="background:'+(hasUrgent?'#ef4444':'var(--t4)')+'"></div>';
+        h+='<div class="di-wrap">';
+        h+='<div class="di-meta">'+dn+' · '+ds+(hasUrgent?' ⚠️':'')+'</div>';
+        h+='<div class="di-label">'+esc(d.label||'Lecture Day')+'<span style="color:var(--t4);font-size:8px;margin-left:3px">('+cnt+')</span></div>';
+        h+='</div>';
+        h+='<button class="di-del" onclick="event.stopPropagation();delDay(\''+d.id+'\')" title="Delete">✕</button>';
+        h+='</div>';
+      });
+      h+='</div></div>';
+    });
+  }
+  h+='<button class="add-btn" onclick="openAddDay()">＋ Add Day</button>';
+  return h;
+}
+
+function toggleWG(wk){
+  var el=document.getElementById('wg-'+wk);
+  if(el) el.classList.toggle('open');
+}
+
+function sbSubjectsHTML(){
+  var h='<div class="sb-sec">All Subjects</div>';
+  if(!S.subjects.length) h+='<div style="padding:5px 4px;font-size:10px;color:var(--t3)">No subjects yet</div>';
+  else S.subjects.forEach(function(s){
+    h+='<div class="subj-item"><div class="sdot" style="background:'+s.color+'"></div><span class="sname" title="'+esc(s.name)+'">'+esc(s.name)+'</span><button class="s-del" onclick="delSubj(\''+s.id+'\')" title="Delete">✕</button></div>';
+  });
+  h+='<button class="add-btn" onclick="openAddSubj()">＋ Add Subject</button>';
+  return h;
+}
+
+function sbExamHTML(){
+  if(!S.subjects.length) return '<div style="padding:12px 4px;font-size:11px;color:var(--t3);line-height:1.7">Add subjects first, then add exam points inside subject cards.</div>';
+  var h='<div class="sb-sec">Tap to View Points</div>';
+  S.subjects.forEach(function(s){
+    var tot=0;
+    S.days.forEach(function(d){ if((d.subjectIds||[]).includes(s.id)) tot+=rec(d.id,s.id).examPoints.length; });
+    h+='<div class="subj-item" onclick="showExam(\''+s.id+'\')" style="cursor:pointer">';
+    h+='<div class="sdot" style="background:'+s.color+'"></div>';
+    h+='<span class="sname">'+esc(s.name)+'</span>';
+    h+='<span style="font-size:9px;color:var(--t3);font-weight:700;flex-shrink:0">'+tot+' pts</span>';
+    h+='</div>';
+  });
+  return h;
+}
+
+// ═══════════════════════════════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════════════════════════════
+function render(){ renderSB(); renderMain(); updateStats(); updateBanner(); }
+
+function renderMain(){
+  var ee=document.getElementById('empty-el'), dv=document.getElementById('day-view'), ev=document.getElementById('exam-view');
+  if(mv==='exam'){
+    ee.style.display='none'; dv.style.display='none'; ev.style.display='block';
+    renderExamView(null);
+    document.getElementById('hdr-title').textContent='Exam Review';
+    document.getElementById('hdr-sub').textContent='All exam points by subject';
+    return;
+  }
+  ev.style.display='none';
+  if(!S.activeDay){ ee.style.display='flex'; dv.style.display='none'; document.getElementById('hdr-title').textContent='Select a Day'; document.getElementById('hdr-sub').textContent='Pick a day from the sidebar'; return; }
+  var day=S.days.find(function(d){return d.id===S.activeDay;});
+  if(!day){ S.activeDay=null; renderMain(); return; }
+  ee.style.display='none'; dv.style.display='block';
+  var dt=new Date(day.date+'T00:00:00');
+  var full=dt.toLocaleDateString('en-PK',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  var wk=getWeekKey(day.date).split('-W')[1];
+  document.getElementById('hdr-title').textContent=day.label||'Lecture Day';
+  document.getElementById('hdr-sub').textContent=full+' · Week '+wk;
+
+  var sids=(day.subjectIds||[]);
+  var subjects=sids.map(function(id){return S.subjects.find(function(s){return s.id===id;});}).filter(Boolean);
+
+  var html='<div class="dv-top"><div><div class="dv-title">'+esc(day.label||'Lecture Day')+'</div><div class="dv-meta">'+esc(full)+' · Week '+wk+' · '+subjects.length+' subject(s)</div></div><button class="dv-add-btn" onclick="openAddSubjToDay()">＋ Add Subject</button></div>';
+
+  if(!subjects.length){
+    html+='<div class="empty-st" style="min-height:220px"><div class="e-icon">📖</div><div class="e-title">No Subjects Yet</div><div class="e-sub">Tap "+ Add Subject" to add today\'s lecture subjects</div></div>';
+  } else {
+    html+='<div class="c-grid">';
+    subjects.forEach(function(s){
+      var r=rec(S.activeDay,s.id);
+      var tot=r.assignments.length, done=r.assignments.filter(function(a){return a.done;}).length;
+      var exam=r.examPoints.length, pct=tot?Math.round(done/tot*100):0;
+      var hasN=r.notes&&r.notes.trim().length>0;
+      var near=null,nearD=999;
+      r.assignments.filter(function(a){return !a.done&&a.due;}).forEach(function(a){var d=daysUntil(a.due); if(d!==null&&d>=0&&d<nearD){nearD=d;near=a;}});
+      var chip='';
+      if(near){ chip=nearD===0?'<div class="dl-chip-card dcc-today">🔴 Due Today!</div>':nearD===1?'<div class="dl-chip-card dcc-tom">🟡 Due Tomorrow</div>':nearD<=2?'<div class="dl-chip-card dcc-soon">🟣 2 Days Left</div>':''; }
+      html+='<div class="s-card fade-up" onclick="openModal(\''+S.activeDay+'\',\''+s.id+'\')" style="border-top-color:'+s.color+'">';
+      html+='<button class="c-rm" onclick="event.stopPropagation();rmSubjDay(\''+s.id+'\')" title="Remove">✕</button>';
+      html+='<div class="c-top"><div class="c-sname" style="color:'+s.color+'">'+esc(s.name)+'</div>'+(hasN?'<div class="c-badge" style="background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2)">Notes ✓</div>':'')+'</div>';
+      html+='<div class="c-stats">';
+      html+='<div class="cst"><div class="cst-n" style="color:#f59e0b">'+tot+'</div><div class="cst-l">Assignments</div></div>';
+      html+='<div class="cst"><div class="cst-n" style="color:#22c55e">'+done+'</div><div class="cst-l">Done</div></div>';
+      html+='<div class="cst"><div class="cst-n" style="color:#a855f7">'+exam+'</div><div class="cst-l">Exam Pts</div></div>';
+      html+='</div>';
+      if(chip) html+=chip;
+      html+='<div class="c-foot"><div class="c-prog"><div class="prog-lbl">'+pct+'% Complete</div><div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%;background:'+s.color+'"></div></div></div><div class="c-open">Open →</div></div>';
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+  dv.innerHTML=html;
+}
+
+function renderExamView(fSid){
+  var el=document.getElementById('exam-view');
+  var html='<div class="er-hdr"><div class="er-title">🎯 Exam Review</div><div class="er-sub">Click subject to expand all points</div></div>';
+  var toShow=fSid?S.subjects.filter(function(s){return s.id===fSid;}):S.subjects;
+  var any=false;
+  toShow.forEach(function(s){
+    var pts=[];
+    S.days.forEach(function(d){
+      if(!(d.subjectIds||[]).includes(s.id))return;
+      rec(d.id,s.id).examPoints.forEach(function(ep){ pts.push({text:ep.text,src:d.label||'Lecture',date:d.date}); });
+    });
+    if(!pts.length)return;
+    any=true;
+    html+='<div class="esb'+(fSid?' open':'')+'" id="esb-'+s.id+'">';
+    html+='<div class="esb-hdr" onclick="toggleESB(\''+s.id+'\')" style="border-left:3px solid '+s.color+'">';
+    html+='<div class="sdot" style="background:'+s.color+';width:10px;height:10px"></div>';
+    html+='<span class="esb-name" style="color:'+s.color+'">'+esc(s.name)+'</span>';
+    html+='<span class="esb-cnt">'+pts.length+' pts</span><span class="esb-arr">▶</span></div>';
+    html+='<div class="esb-pts">';
+    pts.forEach(function(p){
+      html+='<div class="ep-row"><div class="ep-dot"></div><span class="ep-txt">'+esc(p.text)+'</span><span class="ep-src">'+esc(p.src)+'</span></div>';
+    });
+    html+='</div></div>';
+  });
+  if(!any) html+='<div class="er-empty">📭 No exam points yet.<br><br>Open any subject card → tap "Exam Points" tab → add key topics to remember!</div>';
+  el.innerHTML=html;
+}
+
+function toggleESB(sid){ var el=document.getElementById('esb-'+sid); if(el)el.classList.toggle('open'); }
+
+function showExam(sid){
+  mv='exam'; render();
+  document.querySelectorAll('.esb').forEach(function(el){ el.classList.toggle('open',el.id==='esb-'+sid); });
+}
+
+function updateStats(){
+  var ta=0,da=0,ea=0;
+  Object.values(S.records).forEach(function(r){ ta+=r.assignments.length; da+=r.assignments.filter(function(a){return a.done;}).length; ea+=r.examPoints.length; });
+  document.getElementById('st-t').textContent=ta;
+  document.getElementById('st-d').textContent=da;
+  document.getElementById('st-e').textContent=ea;
+  document.getElementById('h-p').textContent=ta-da;
+  document.getElementById('h-d').textContent=da;
+  document.getElementById('h-e').textContent=ea;
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════
+function selDay(id){ S.activeDay=id; mv='day'; setSV('days'); closeSidebar(); render(); }
+
+function delDay(id){
+  if(!confirm('Delete this day and all its data?'))return;
+  S.days=S.days.filter(function(d){return d.id!==id;});
+  Object.keys(S.records).forEach(function(k){if(k.startsWith(id+'__'))delete S.records[k];});
+  if(S.activeDay===id) S.activeDay=null;
+  autoSave(); render();
+}
+function delSubj(id){
+  if(!confirm('Delete this subject? All related data will be removed.'))return;
+  S.subjects=S.subjects.filter(function(s){return s.id!==id;});
+  S.days.forEach(function(d){d.subjectIds=(d.subjectIds||[]).filter(function(x){return x!==id;});});
+  Object.keys(S.records).forEach(function(k){if(k.includes('__'+id))delete S.records[k];});
+  autoSave(); render();
+}
+function rmSubjDay(sid){
+  var day=S.days.find(function(d){return d.id===S.activeDay;}); if(!day)return;
+  day.subjectIds=(day.subjectIds||[]).filter(function(x){return x!==sid;});
+  autoSave(); renderMain(); updateBanner();
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUBJECT MODAL
+// ═══════════════════════════════════════════════════════════
+var AM={dId:null,sId:null}, aTab='asgn';
+
+function openModal(dId,sId){
+  AM={dId:dId,sId:sId};
+  var sub=S.subjects.find(function(s){return s.id===sId;}), day=S.days.find(function(d){return d.id===dId;});
+  if(!sub||!day)return;
+  var dot=document.getElementById('m-dot');
+  dot.style.cssText='background:'+sub.color+'20;border:1px solid '+sub.color+'50;color:'+sub.color+';font-size:18px;font-weight:900;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0';
+  dot.textContent=sub.name.charAt(0).toUpperCase();
+  document.getElementById('m-title').textContent=sub.name;
+  document.getElementById('m-sub').textContent=day.label||'Lecture Day';
+  switchTab('asgn');
+  document.getElementById('modal-ov').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-ov').classList.remove('open'); renderMain(); updateStats(); updateBanner(); }
+function onMOvClick(e){ if(e.target===document.getElementById('modal-ov'))closeModal(); }
+
+function switchTab(t){
+  aTab=t;
+  document.querySelectorAll('.m-tab').forEach(function(el){el.classList.toggle('act',el.dataset.t===t);});
+  document.querySelectorAll('.tab-p').forEach(function(el){el.classList.toggle('act',el.id==='p-'+t);});
+  if(t==='asgn') renderAsgn();
+  if(t==='notes') renderNotes();
+  if(t==='exam') renderExam();
+}
+
+// Assignments
+function renderAsgn(){
+  var r=rec(AM.dId,AM.sId), lst=document.getElementById('a-list'), emp=document.getElementById('a-empty');
+  document.getElementById('tc-a').textContent=r.assignments.length;
+  if(!r.assignments.length){lst.innerHTML='';emp.style.display='block';return;}
+  emp.style.display='none';
+  lst.innerHTML=r.assignments.map(function(a){
+    var bc=getDBC(a.due), bt=a.due?getDBT(a.due):'';
+    return '<div class="a-item'+(a.done?' done':'')+'"><button class="a-chk" onclick="togAsgn(\''+a.id+'\')">'+(a.done?'✓':'')+'</button><div class="a-body"><div class="a-txt">'+esc(a.text)+'</div>'+(a.due?'<div class="due-badge '+bc+'">'+esc(bt)+'</div>':'')+'</div><button class="i-del" onclick="delAsgn(\''+a.id+'\')" title="Delete">✕</button></div>';
+  }).join('');
+}
+function addAsgn(){
+  var t=(document.getElementById('a-txt').value||'').trim(), d=document.getElementById('a-due').value;
+  if(!t)return;
+  rec(AM.dId,AM.sId).assignments.push({id:uid(),text:t,done:false,due:d||''});
+  document.getElementById('a-txt').value=''; document.getElementById('a-due').value='';
+  autoSave(); renderAsgn(); updateStats(); updateBanner();
+}
+function togAsgn(id){
+  var r=rec(AM.dId,AM.sId), a=r.assignments.find(function(x){return x.id===id;});
+  if(a){a.done=!a.done; autoSave(); renderAsgn(); updateStats(); updateBanner();}
+}
+function delAsgn(id){
+  var r=rec(AM.dId,AM.sId); r.assignments=r.assignments.filter(function(x){return x.id!==id;});
+  autoSave(); renderAsgn(); updateStats(); updateBanner();
+}
+
+// Notes
+var nTimer=null;
+function renderNotes(){ var r=rec(AM.dId,AM.sId); document.getElementById('notes-ta').value=r.notes||''; updCh(); }
+function onNotes(){
+  var r=rec(AM.dId,AM.sId); r.notes=document.getElementById('notes-ta').value; updCh();
+  clearTimeout(nTimer); nTimer=setTimeout(function(){ autoSave(); var el=document.getElementById('notes-sv'); el.classList.add('show'); setTimeout(function(){el.classList.remove('show');},1500); },600);
+}
+function updCh(){ document.getElementById('notes-ch').textContent=(document.getElementById('notes-ta').value||'').length+' characters'; }
+
+// Exam Points
+function renderExam(){
+  var r=rec(AM.dId,AM.sId), lst=document.getElementById('e-list'), emp=document.getElementById('e-empty');
+  document.getElementById('tc-e').textContent=r.examPoints.length;
+  if(!r.examPoints.length){lst.innerHTML='';emp.style.display='block';return;}
+  emp.style.display='none';
+  lst.innerHTML=r.examPoints.map(function(ep){
+    return '<div class="ex-item"><div class="ex-dot"></div><span class="ex-txt">'+esc(ep.text)+'</span><button class="i-del p" onclick="delExam(\''+ep.id+'\')" title="Delete">✕</button></div>';
+  }).join('');
+}
+function addExam(){
+  var t=(document.getElementById('e-txt').value||'').trim(); if(!t)return;
+  rec(AM.dId,AM.sId).examPoints.push({id:uid(),text:t});
+  document.getElementById('e-txt').value='';
+  autoSave(); renderExam(); updateStats();
+}
+function delExam(id){
+  var r=rec(AM.dId,AM.sId); r.examPoints=r.examPoints.filter(function(x){return x.id!==id;});
+  autoSave(); renderExam(); updateStats();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADD SUBJECT MINI MODAL
+// ═══════════════════════════════════════════════════════════
+var sc=COLORS[0];
+function openAddSubj(){
+  sc=COLORS[0];
+  mini('<div class="mini-ttl">➕ New Subject</div><label class="mlbl">Subject Name</label><input type="text" class="minp" id="ns" placeholder="e.g. Data Structures, Physics..." onkeydown="if(event.key===\'Enter\')doAddSubj()"><label class="mlbl">Color</label><div class="c-row">'+COLORS.map(function(c,i){return '<div class="c-opt'+(i===0?' sel':'')+'" style="background:'+c+'" onclick="pickC(\''+c+'\',this)"></div>';}).join('')+'</div><div class="m-acts"><button class="m-cancel" onclick="closeMini()">Cancel</button><button class="m-ok" onclick="doAddSubj()">Add Subject</button></div>');
+  setTimeout(function(){var e=document.getElementById('ns');if(e)e.focus();},100);
+}
+function pickC(c,el){ sc=c; document.querySelectorAll('.c-opt').forEach(function(e){e.classList.remove('sel');}); el.classList.add('sel'); }
+function doAddSubj(){
+  var n=(document.getElementById('ns').value||'').trim(); if(!n){alert('Enter a subject name!');return;}
+  S.subjects.push({id:uid(),name:n,color:sc}); autoSave(); closeMini(); render();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADD DAY MINI MODAL
+// ═══════════════════════════════════════════════════════════
+function openAddDay(){
+  var td=getPKT().toISOString().split('T')[0];
+  mini('<div class="mini-ttl">📅 Add New Day</div><label class="mlbl">Date</label><input type="date" class="minp" id="nd-d" value="'+td+'"><label class="mlbl">Label (Optional)</label><input type="text" class="minp" id="nd-l" placeholder="e.g. Monday Lectures, Week 3..." onkeydown="if(event.key===\'Enter\')doAddDay()"><div class="m-acts"><button class="m-cancel" onclick="closeMini()">Cancel</button><button class="m-ok" onclick="doAddDay()">Add Day</button></div>');
+}
+function doAddDay(){
+  var date=(document.getElementById('nd-d').value||'').trim();
+  var label=(document.getElementById('nd-l').value||'').trim();
+  if(!date){alert('Pick a date!');return;}
+  if(!label){ var dt=new Date(date+'T00:00:00'); label=dt.toLocaleDateString('en-PK',{weekday:'long'})+' Lectures'; }
+  var nd={id:uid(),date:date,label:label,subjectIds:[]};
+  S.days.push(nd); S.activeDay=nd.id; mv='day';
+  autoSave(); closeMini(); setSV('days'); renderMain(); updateBanner();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADD SUBJECT TO DAY
+// ═══════════════════════════════════════════════════════════
+var ts=[];
+function openAddSubjToDay(){
+  var day=S.days.find(function(d){return d.id===S.activeDay;}); if(!day)return;
+  if(!S.subjects.length){alert('Go to "Subjects" tab and add subjects first!');return;}
+  ts=(day.subjectIds||[]).slice();
+  mini('<div class="mini-ttl">📚 Add Subjects to Day</div><label class="mlbl">Select subjects for this lecture</label><div class="ssl">'+S.subjects.map(function(s){var sel=ts.includes(s.id); return '<div class="ssl-i'+(sel?' sel':'')+'" onclick="togSSL(\''+s.id+'\',this)"><div class="sdot" style="background:'+s.color+';width:10px;height:10px;flex-shrink:0"></div><span style="font-size:13px;font-weight:600;flex:1">'+esc(s.name)+'</span><div class="ssl-chk">'+(sel?'✓':'')+'</div></div>';}).join('')+'</div><div class="m-acts"><button class="m-cancel" onclick="closeMini()">Cancel</button><button class="m-ok" onclick="doAddSubjDay()">Save</button></div>');
+}
+function togSSL(id,el){ var i=ts.indexOf(id); if(i===-1){ts.push(id);el.classList.add('sel');el.querySelector('.ssl-chk').textContent='✓';}else{ts.splice(i,1);el.classList.remove('sel');el.querySelector('.ssl-chk').textContent='';} }
+function doAddSubjDay(){ var day=S.days.find(function(d){return d.id===S.activeDay;}); if(!day)return; day.subjectIds=ts.slice(); autoSave(); closeMini(); renderMain(); updateBanner(); }
+
+// ═══════════════════════════════════════════════════════════
+// MINI MODAL HELPER
+// ═══════════════════════════════════════════════════════════
+function mini(html){ document.getElementById('mini-c').innerHTML=html; document.getElementById('mini-ov').classList.add('open'); }
+function closeMini(){ document.getElementById('mini-ov').classList.remove('open'); }
+function onMiniOvClick(e){ if(e.target===document.getElementById('mini-ov'))closeMini(); }
+
+// ═══════════════════════════════════════════════════════════
+// MOBILE SIDEBAR
+// ═══════════════════════════════════════════════════════════
+function toggleSidebar(){ var sb=document.getElementById('sidebar'), ov=document.getElementById('mob-overlay'); var o=sb.classList.toggle('open'); ov.classList.toggle('show',o); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('mob-overlay').classList.remove('show'); }
+
+// Show hamburger on small screens
+(function(){ if(window.innerWidth<=900) document.querySelector('.hamburger').style.display='flex'; window.addEventListener('resize',function(){ var h=document.querySelector('.hamburger'); if(h) h.style.display=window.innerWidth<=900?'flex':'none'; }); })();
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
